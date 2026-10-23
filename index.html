@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Street Foods | Night Food Cart</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style type="text/tailwindcss">
+        @custom-variant dark (&:where(.dark, .dark *));
+        :root {
+            --base: #BFE3F8;
+            --accent: #2CC9DD;
+            --pop: #0A0A0A;
+            --btn-ink: #FFFFFF;
+            --ink: #0B1B27;
+            --on-accent: #06141C;
+            --icon-c: #1FB5CA;
+            --glass: rgba(255, 255, 255, .38);
+            --glass-b: rgba(255, 255, 255, .7);
+        }
+        .dark {
+            --base: #000000;
+            --accent: #121212;
+            --pop: #FFFFFF;
+            --btn-ink: #0A0A0A;
+            --ink: #F5F5F5;
+            --on-accent: #F5F5F5;
+            --icon-c: #BDBDBD;
+            --glass: rgba(255, 255, 255, .07);
+            --glass-b: rgba(255, 255, 255, .18);
+        }
+        @layer components {
+            .glass-card {
+                background: var(--glass);
+                border: 1px solid var(--glass-b);
+                border-radius: 1.5rem;
+                backdrop-filter: blur(18px) saturate(150%);
+                -webkit-backdrop-filter: blur(18px) saturate(150%);
+                box-shadow: 0 8px 32px rgba(8, 40, 70, .18);
+            }
+            .btn {
+                background: var(--pop);
+                color: var(--btn-ink);
+                font-weight: 600;
+                border-radius: 9999px;
+                padding: .75rem 1.5rem;
+                border: 1px solid var(--glass-b);
+            }
+            .band {
+                background: var(--accent);
+                color: var(--on-accent);
+                position: relative;
+                overflow: hidden;
+            }
+        }
+        html { scroll-behavior: smooth; }
+        body { background: var(--base); color: var(--ink); font-family: 'Karla', sans-serif; transition: background-color .5s, color .5s; }
+        h1, h2, h3, .brand { font-family: 'Rubik', sans-serif; }
+        #progressBar { position: fixed; top: 0; left: 0; z-index: 50; height: 4px; width: 100%; background: var(--pop); transform: scaleX(0); transform-origin: left; }
+        .blob { position: fixed; z-index: -1; border-radius: 50%; pointer-events: none; }
+        .blob-in { position: absolute; border-radius: 50%; pointer-events: none; }
+        .dark .blob, .dark .blob-in { filter: grayscale(1); opacity: .35; }
+        .ic { fill: var(--pop); }
+        .ic-c { fill: var(--icon-c); }
+        .tile { background: rgba(255, 255, 255, .3); }
+        #nav a.active { text-decoration: underline; text-decoration-color: var(--pop); text-decoration-thickness: 3px; text-underline-offset: 6px; }
+        :focus-visible { outline: 3px solid var(--pop); outline-offset: 3px; }
+        input, textarea { background: transparent; border: 1px solid var(--glass-b); border-radius: .75rem; padding: .7rem .9rem; width: 100%; color: inherit; }
+        input::placeholder, textarea::placeholder { color: inherit; opacity: .6; }
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;800&family=Karla:wght@400;500&display=swap"
+        rel="stylesheet">
+</head>
+
+<body class="antialiased">
+    <svg width="0" height="0" class="absolute" aria-hidden="true">
+        <symbol id="skewer" viewBox="0 0 100 100">
+            <path d="M12 88 84 16l4 4-72 72z" />
+            <circle cx="62" cy="38" r="12" />
+            <circle cx="42" cy="58" r="12" />
+            <circle cx="26" cy="74" r="10" />
+        </symbol>
+        <symbol id="bowl" viewBox="0 0 100 100">
+            <path d="M8 44h84c0 26-18 42-42 42S8 70 8 44z" />
+            <path d="M34 34c-6-8 6-12 0-22h6c6 10-6 14 0 22zm22 0c-6-8 6-12 0-22h6c6 10-6 14 0 22z" />
+        </symbol>
+        <symbol id="cup" viewBox="0 0 100 100">
+            <path d="M22 30h56l-6 60H28z" />
+            <path d="M30 12h40l4 12H26z" />
+        </symbol>
+    </svg>
+    <div id="progressBar"></div>
+    <div class="blob w-[60vw] h-[60vw] -left-[15vw] top-[10vh]" data-depth="0.6"
+        style="background:radial-gradient(circle,rgba(44,201,221,.65),transparent 70%)"></div>
+    <div class="blob w-[40vw] h-[40vw] right-[-8vw] top-[60vh]" data-depth="1.2"
+        style="background:radial-gradient(circle,rgba(60,120,220,.4),transparent 70%)"></div>
+    <div class="blob w-[24vw] h-[24vw] right-[18vw] top-[8vh]" data-depth="0.9"
+        style="background:radial-gradient(circle,rgba(255,255,255,.8),transparent 70%)"></div>
+    <header>
+        <nav id="nav"
+            class="glass-card fixed top-3 inset-x-3 md:inset-x-[6vw] z-40 flex items-center justify-between px-5 py-3 !rounded-full">
+            <span class="brand font-extrabold text-xl">Street Foods</span>
+            <ul class="hidden md:flex gap-6 text-sm">
+                <li><a href="#about">About</a></li>
+                <li><a href="#services">Services</a></li>
+                <li><a href="#products">Menu</a></li>
+                <li><a href="#work">Work</a></li>
+                <li><a href="#news">News</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <button id="darkModeToggle" type="button" aria-pressed="false" class="btn !py-1.5 !px-4 text-sm">Dark
+                Mode</button>
+            <button id="replayBtn" type="button" class="glass-card !rounded-full px-6 py-3 text-sm">Replay
+                Intro</button>
+        </nav>
+    </header>
+    <main>
+        <section id="hero"
+            class="min-h-screen grid lg:grid-cols-[1.4fr_1fr] gap-10 items-center px-6 md:px-[8vw] pt-28 pb-16">
+            <div>
+                <h1 class="font-extrabold text-5xl md:text-8xl leading-[.95] tracking-tight">Hot off the grill, every
+                    night until midnight.</h1>
+                <p class="mt-6 max-w-md text-lg">Street Foods is a night food cart serving skewers, dumplings, and
+                    noodle bowls cooked to order over charcoal.</p>
+                <div class="cta mt-8 flex flex-wrap gap-3">
+                    <a href="#products" class="btn">See tonight's menu</a>
+                </div>
+            </div>
+            <div id="heroVisual" class="hidden lg:block">
+                <div class="hero-card glass-card p-8 flex flex-col items-center">
+                    <svg viewBox="0 0 100 100" class="w-44 ic">
+                        <use href="#skewer" />
+                    </svg>
+                    <p class="brand font-semibold text-lg mt-2">Tonight's special</p>
+                    <p class="opacity-80 text-center">chicken barbecue, 3 for ₱39</p>
+                </div>
+            </div>
+        </section>
+        <section id="about" class="reveal" data-fade>
+            <div id="aboutPin" class="band min-h-screen flex items-center px-6 md:px-[8vw]">
+                <div class="blob-in w-[40vw] h-[40vw] -right-[10vw] -bottom-[10vw]"
+                    style="background:radial-gradient(circle,rgba(255,255,255,.55),transparent 70%)"></div>
+                <p id="aboutText" class="relative brand text-3xl md:text-6xl font-semibold leading-tight max-w-5xl">
+                    Street Foods started as one charcoal grill and a folding table. We still cook everything to order,
+                    buy our vegetables from the morning market, and make every sauce in our own kitchen before we roll
+                    out each evening.</p>
+            </div>
+        </section>
+        <section id="services" class="reveal px-6 md:px-[8vw] py-28">
+            <h2 class="font-extrabold text-4xl md:text-6xl max-w-2xl">Eat at the cart, or we bring the cart to you.</h2>
+            <div class="mt-12 grid md:grid-cols-3 gap-6">
+                <article class="glass-card p-8">
+                    <h3 class="font-semibold text-2xl">Night cart</h3>
+                    <p class="mt-3">Walk up, order, and eat within ten minutes. Open every evening, rain or shine.</p>
+                    <p class="mt-6 opacity-80">5 pm to midnight</p>
+                </article>
+                <article class="glass-card p-8">
+                    <h3 class="font-semibold text-2xl">Event catering</h3>
+                    <p class="mt-3">We set up a grill at your party, market, or office event and cook for 30 to 100
+                        people.</p>
+                    <p class="mt-6 opacity-80">From ₱800 per guest</p>
+                </article>
+                <article class="glass-card p-8">
+                    <h3 class="font-semibold text-2xl">Late delivery</h3>
+                    <p class="mt-3">Skewer boxes and noodle bowls delivered hot within three kilometers of the cart.</p>
+                    <p class="mt-6 opacity-80"> ₱30 flat fee</p>
+                </article>
+            </div>
+        </section>
+        <section id="products" class="reveal" data-fade>
+            <div id="productsPin" class="h-screen overflow-hidden flex flex-col justify-center">
+                <h2 class="px-6 md:px-[8vw] font-extrabold text-4xl md:text-6xl">Tonight's menu</h2>
+                <div id="trackWrap" class="mt-8 overflow-x-auto">
+                    <div id="track" class="flex gap-6 w-max px-6 md:px-[8vw] pb-4">
+
+                        <!-- 1. Chicken Barbecue -->
+                        <article class="glass-card w-[78vw] md:w-[24rem] p-6">
+                            <div class="tile rounded-2xl h-56 overflow-hidden">
+                                <img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a7/Skewer_with_marinated_chicken_wings_bbq_barbeque.jpg/960px-Skewer_with_marinated_chicken_wings_bbq_barbeque.jpg"
+                                    alt="Chicken Barbecue" class="w-full h-full object-cover">
+                            </div>
+                            <h3 class="font-semibold text-xl mt-4">Chicken Barbecue</h3>
+                            <p class="opacity-80">Sweet and savory marinade, grilled over charcoal · ₱39</p>
+                        </article>
+
+                        <!-- 2. Pork Barbecue -->
+                        <article class="glass-card w-[78vw] md:w-[24rem] p-6">
+                            <div class="tile rounded-2xl h-56 overflow-hidden">
+                                <img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/1/14/Inihaw_na_baboy_%28Filipino_pork_barbecue_on_skewers%29.jpg/960px-Inihaw_na_baboy_%28Filipino_pork_barbecue_on_skewers%29.jpg"
+                                    alt="Pork Barbecue" class="w-full h-full object-cover">
+                            </div>
+                            <h3 class="font-semibold text-xl mt-4">Pork Barbecue</h3>
+                            <p class="opacity-80">Tender pork cuts, brushed with sweet sauce · ₱35</p>
+                        </article>
+
+                        <!-- 3. Grilled Blood Cube (Betamax) -->
+                        <article class="glass-card w-[78vw] md:w-[24rem] p-6">
+                            <div class="tile rounded-2xl h-56 overflow-hidden">
+                                <img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/5/58/DSCF0629_Glazed_charred_skewers_of_grilled_meat_lined_up_and_sizzling_on_the_grill_-_juicy_barbecue_satay_ready_to_eat.jpg/960px-DSCF0629_Glazed_charred_skewers_of_grilled_meat_lined_up_and_sizzling_on_the_grill_-_juicy_barbecue_satay_ready_to_eat.jpg"
+                                    alt="Grilled Blood Cube" class="w-full h-full object-cover">
+                            </div>
+                            <h3 class="font-semibold text-xl mt-4">Grilled Blood Cube</h3>
+                            <p class="opacity-80">Betamax, grilled with spiced vinegar dip · ₱20</p>
+                        </article>
+
+                        <!-- 4. Chicken Isaw -->
+                        <article class="glass-card w-[78vw] md:w-[24rem] p-6">
+                            <div class="tile rounded-2xl h-56 overflow-hidden">
+                                <img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fd/Isaw_%28street_food%29.jpg/960px-Isaw_%28street_food%29.jpg"
+                                    alt="Chicken Isaw" class="w-full h-full object-cover">
+                            </div>
+                            <h3 class="font-semibold text-xl mt-4">Chicken Isaw</h3>
+                            <p class="opacity-80">Skewered, grilled, with spiced vinegar · ₱20</p>
+                        </article>
+
+                        <!-- 5. Lemonade Tea -->
+                        <article class="glass-card w-[78vw] md:w-[24rem] p-6">
+                            <div class="tile rounded-2xl h-56 overflow-hidden">
+                                <img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/c/ca/Iced_Tea_with_Lemon%2C_First_Watch%2C_Melbourne%2C_Florida.jpg/960px-Iced_Tea_with_Lemon%2C_First_Watch%2C_Melbourne%2C_Florida.jpg"
+                                    alt="Lemonade Tea" class="w-full h-full object-cover">
+                            </div>
+                            <h3 class="font-semibold text-xl mt-4">Lemonade Tea</h3>
+                            <p class="opacity-80">Iced tea with a refreshing lemon twist · ₱25</p>
+                        </article>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section id="work" class="reveal band px-6 md:px-[8vw] py-28">
+            <div class="blob-in w-[35vw] h-[35vw] left-[5vw] top-[20%]"
+                style="background:radial-gradient(circle,rgba(255,255,255,.5),transparent 70%)"></div>
+            <h2 class="relative font-extrabold text-4xl md:text-6xl">Where we've cooked</h2>
+            <div class="relative mt-12 grid md:grid-cols-3 gap-6 items-start">
+                <article class="glass-card p-8 min-h-64" data-speed="0.4">
+                    <h3 class="font-semibold text-2xl">Weekend night market</h3>
+                    <p class="mt-3">Four hundred skewers a night for a rooftop market, sold out by ten.</p>
+                </article>
+                <article class="glass-card p-8 min-h-64" data-speed="0.9">
+                    <h3 class="font-semibold text-2xl">Wedding after-party</h3>
+                    <p class="mt-3">A midnight noodle bar for 150 guests, served straight from the grill.</p>
+                </article>
+                <article class="glass-card p-8 min-h-64" data-speed="0.2">
+                    <h3 class="font-semibold text-2xl">Office launch day</h3>
+                    <p class="mt-3">Lunch for a team of 80, with vegetarian dumplings and a corn station.</p>
+                </article>
+            </div>
+        </section>
+        <section id="news" class="reveal px-6 md:px-[8vw] py-28">
+            <h2 class="font-extrabold text-4xl md:text-6xl">News</h2>
+            <div class="mt-12 grid gap-6 max-w-3xl">
+                <article class="news glass-card p-8">
+                    <p class="opacity-80 text-sm">Nov 8</p>
+                    <h3 class="font-semibold text-2xl">New: hibiscus cooler</h3>
+                    <p class="mt-2">Our first drink is on the cart. Free refill if you bring your cup back.</p>
+                </article>
+                <article class="news glass-card p-8">
+                    <p class="opacity-80 text-sm">Oct 20</p>
+                    <h3 class="font-semibold text-2xl">Vegetarian menu every Tuesday</h3>
+                    <p class="mt-2">Mushroom skewers, tofu noodles, and veggie dumplings, all night.</p>
+                </article>
+                <article class="news glass-card p-8">
+                    <p class="opacity-80 text-sm">Oct 2</p>
+                    <h3 class="font-semibold text-2xl">The cart now closes at 1 am on weekends</h3>
+                    <p class="mt-2">We serve one hour later on Fridays and Saturdays.</p>
+                </article>
+            </div>
+        </section>
+        <section id="contact" class="reveal px-6 md:px-[8vw] py-28">
+            <div class="grid md:grid-cols-2 gap-10 items-start">
+                <div>
+                    <h2 class="font-extrabold text-4xl md:text-6xl">Find the cart or book us.</h2>
+                    <p class="mt-6 max-w-sm">We park at the corner market from 5 pm to midnight, Tuesday to Sunday.
+                        Catering requests need three days' notice.</p>
+                </div>
+                <form action="#" id="contactForm" class="glass-card p-8 grid gap-4">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" name="name" required placeholder="Your name">
+
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required placeholder="you@example.com">
+
+                    <label for="message">Message</label>
+                    <textarea id="message" name="message" rows="5" required
+                        placeholder="Event date and guest count"></textarea>
+
+                    <button type="submit" class="btn justify-self-start">Send Message</button>
+                    <p id="formMsg" class="opacity-0" role="status">Message sent. We reply within one day.</p>
+                </form>
+            </div>
+        </section>
+    </main>
+    <footer class="band px-6 md:px-[8vw] py-10 text-sm flex flex-wrap justify-between gap-4">
+        <span class="brand font-extrabold text-lg">Street Foods</span>
+        <p>&copy; 2026 Street Foods. Cooked to order.</p>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
